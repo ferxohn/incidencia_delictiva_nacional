@@ -1,20 +1,25 @@
-FROM rocker/geospatial:4.0.4
-
-LABEL org.label-schema.license="GPL-2.0" \
-    org.label-schema.vcs-url="https://github.com/rocker-org/rocker-versioned" \
-    org.label-schema.vendor="Rocker Project" \
-    maintainer="Carl Boettiger <cboettig@ropensci.org>"
+## Use a tag instead of "latest" for reproducibility
+FROM rocker/binder:4.0.4
 
 ENV RSTUDIO_VERSION 1.3.959
 RUN /rocker_scripts/install_rstudio.sh
 
-ENV NB_USER=jovyan
+## Declares build arguments
+ARG NB_USER
+ARG NB_UID
 
-RUN /rocker_scripts/install_python.sh
-RUN /rocker_scripts/install_binder.sh
+## Copies your repo files into the Docker Container
+USER root
+COPY . ${HOME}
+## Enable this to copy files from the binder subdirectory
+## to the home, overriding any existing files.
+## Useful to create a setup on binder that is different from a
+## clone of your repository
+## COPY binder ${HOME}
+RUN chown -R ${NB_USER} ${HOME}
 
-CMD jupyter notebook --ip 0.0.0.0
-
+## Become normal user again
 USER ${NB_USER}
 
-WORKDIR /home/${NB_USER}
+## Run an install.R script, if it exists.
+RUN if [ -f install.R ]; then R --quiet -f install.R; fi
