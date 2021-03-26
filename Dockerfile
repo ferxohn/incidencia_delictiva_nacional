@@ -1,5 +1,5 @@
 ## Use a tag instead of "latest" for reproducibility
-FROM rocker/binder:4.0.4
+FROM rocker/binder:3.6.3
 
 ## Declares build arguments
 ARG NB_USER
@@ -7,10 +7,6 @@ ARG NB_UID
 
 ## Copies your repo files into the Docker Container
 USER root
-
-ENV RSTUDIO_VERSION 1.4.1106
-ENV RSESSION_PROXY_RSTUDIO_1_4=yes
-RUN /rocker_scripts/install_rstudio.sh
 
 COPY . ${HOME}
 ## Enable this to copy files from the binder subdirectory
