@@ -8,8 +8,7 @@ ARG NB_UID
 ## Copies your repo files into the Docker Container
 USER root
 
-ENV RSTUDIO_VERSION 1.3.959
-RUN /rocker_scripts/install_rstudio.sh
+RUN echo "www-root-path=${NB_PREFIX%%+(/)}" >> /etc/rstudio/rserver.conf
 
 COPY . ${HOME}
 ## Enable this to copy files from the binder subdirectory
